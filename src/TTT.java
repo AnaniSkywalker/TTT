@@ -12,6 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Scanner;
 
 public class TTT extends JFrame implements ActionListener
 {
@@ -115,7 +116,7 @@ public class TTT extends JFrame implements ActionListener
 		if(gamePanel[3][0] ==selectedSpot && gamePanel[2][1] ==selectedSpot && gamePanel[1][2] ==selectedSpot && gamePanel[0][3] ==selectedSpot)
 			return true;
 		if(gamePanel[4][1] ==selectedSpot && gamePanel[3][2] ==selectedSpot && gamePanel[2][3] ==selectedSpot && gamePanel[1][4] ==selectedSpot)
-			return true;
+			return true;	
 	}
 	
 	//Now let us create a method to keep tie record
@@ -133,9 +134,84 @@ public class TTT extends JFrame implements ActionListener
 	}
 	
 	//Let us set the actionPerformed method (keep in mind this method does not return value
-	public void actionPerformed(ActionEvent y)		//import java.awt.event.ActionEvent;
+	public void actionPerformed(ActionEvent ax)		//import java.awt.event.ActionEvent;
 	{
-		
+		String action = ax.getActionCommand();
+		if(action.length() ==4)
+		{
+			// Getting the coordinate of the button that perfomed an action
+			Scanner intake = new Scanner(action);
+			String xCoordinate = intake.next();
+			String yCoordinate = intake.next();
+			int x = Integer.parseInt(xCoordinate);
+			int y = Integer.parseInt(yCoordinate);
+			JButton button = gameIndex[x][y];
+			
+			if(button.isEnabled())
+			{
+				if(oTurn)
+				{
+					gameMessage.setText("It is now Player X's Turn.");
+					button.setText("O");
+					leaveADot[x][y] = 'O';
+					button.setEnabled(false);
+					oTurn = false;
+				}
+				else
+				{
+					gameMessage.setText("It is now Player O's Turn.");
+					button.setText("X");
+					leaveADot[x][y] ='X';
+					button.setEnabled(false);
+					oTurn = true;
+				}
+			}
+			
+			//Check the board for whoever wins
+			if(gameTie(leaveADot))
+			{
+				gameMessage.setText("The Game Is Tied!");
+				for(int a=0; a<5; a++)
+				{
+					for(int b=0; b<5; b++)
+					{
+						gameIndex[a][b].setEnabled(false);
+					}
+				}
+			}
+			
+			//Disabiling the game board once a wnner has been determined
+			if(Winner('X', leaveADot))
+			{
+				gameMessage.setText("Player X has Won!");
+				for(int a=0; a<5; a++)
+				{
+					for(int b=0; b<5; b++)
+					{
+						gameIndex[a][b].setEnabled(false);
+					}
+				}
+			}
+			
+			if(Winner('O', leaveADot))
+			{
+				gameMessage.setText("Player O has Won!");
+				for(int a=0; a<5; a++)
+				{
+					for(int b=0; b<5; b++)
+					{
+						gameIndex[a][b].setEnabled(false);
+					}
+				}
+			}
+			intake.close();
+		}
+	}
+	
+	public static void main(String[] args)
+	{
+		TTT ttt = new TTT();
+		ttt.setVisible(true);
 	}
 
 }
